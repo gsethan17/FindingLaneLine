@@ -20,6 +20,8 @@
 import flycapture2 as fc2
 import numpy as np
 import cv2
+import datetime
+import os
 
 def test():
     print fc2.get_library_version()
@@ -39,20 +41,31 @@ def test():
     print p
     c.set_property(**p)
     c.start_capture()
+	
+    # video writer
+    if not os.path.exists("./saved_video") :
+		os.makedirs("./saved_video")
+    t = datetime.datetime.now().strftime("%Y%m%d-%H%M")
+    fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
+    out = cv2.VideoWriter('./saved_video/'+ t + '.mp4', fourcc, 30.0, (640, 480))
 
     # show the image
     while 1 :
+	
+	
 	im = fc2.Image()
 	c.retrieve_buffer(im)
 	a = np.array(im)
         b = cv2.cvtColor(a, cv2.COLOR_BAYER_BG2BGR)
 	cv2.imshow('x', b)
+	out.write(b)
 	if cv2.waitKey(1) & 0xFF == ord('q') :
 	    break
 
 #    im = fc2.Image()
 #    print [np.array(c.retrieve_buffer(im)).sum() for i in range(80)]
 #    a = np.array(im)
+    out.release()
     print a.shape, a.base
     c.stop_capture()
     c.disconnect()
