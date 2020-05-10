@@ -59,10 +59,12 @@ def test():
     ## video save path
     if not os.path.exists("./saved_video") :
 		os.makedirs("./saved_video")
+    xsize = int(c.get_camera_info()['sensor_resolution'][:4])
+    ysize = int(c.get_camera_info()['sensor_resolution'][5:])
     t = datetime.datetime.now().strftime("%Y%m%d-%H%M")
     ## saved video parameter setting(15frames per sec, resolution(960, 600))
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter('./saved_video/'+ t + '.avi', fourcc, 15.0, (960, 600))
+    out = cv2.VideoWriter('./saved_video/'+ t + '.avi', fourcc, 15.0, (xsize, ysize))
     
     # set time variable to get the frame rate
     te = 0
